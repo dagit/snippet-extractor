@@ -11,20 +11,44 @@ import Text.Parsec.Combinator
 
 main :: IO ()
 main = do
-  [file] <- getArgs
-  contents <- readFile file
-  case runParser parseSnippet () file contents of
-    Left  err -> print err
-    Right (name, ls) -> do
-      withFile name WriteMode $ \h -> do
-        hPutStr h ls
+  args <- getArgs
+  if ("--help" `elem` args)
+    then printUsage
+    else mapM_ processFile args
   return ()
+ where
+ processFile file = do
+   contents <- readFile file
+   case runParser parseSnippet () file contents of
+     Left  err -> print err
+     Right (name, ls) -> do
+       withFile name WriteMode $ \h -> do
+       hPutStr h ls
+ printUsage = do
+   putStr $ "Usage: snippet-extractor [FILE1 FILE2 ...]\n" ++
+            "\n" ++
+            "The snippet-extractor looks for snippets and puts them in\n"++
+            "their own files.  This can make it easier to include snippets\n"++
+            "in LaTeX or DocBook files.\n"++
+            "\n" ++
+            "A snippet has the following form:\n"++
+            "  /* @snippet-start snippet1.c */\n"++
+            "  for(i = 0; i < 100; i++){\n"++
+            "    printf(\"%d\\n\");\n"++
+            "  }\n"++
+            "  /* @snippet-end */\n"++
+            "\n" ++
+            "The above snippet would be extracted and place in snippet1.c\n"++
+            "\n" ++
+            "Note: If the filename you want the snippet place in has spaces,\n"++
+            "      then put the name in quotes like this:\n"++
+            "      @snippet-start \"destination file.c\"\n"
 
 snippetStart :: String
-snippetStart = "@extract-snippet-start"
+snippetStart = "@snippet-start"
 
 snippetEnd :: String
-snippetEnd = "@extract-snippet-end"
+snippetEnd = "@snippet-end"
 
 parseName :: Parser FilePath
 parseName = do
