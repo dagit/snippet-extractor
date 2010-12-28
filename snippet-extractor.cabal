@@ -9,7 +9,10 @@ Maintainer:          dagitj@gmail.com
 -- Copyright:           
 Category:            Text
 Build-type:          Simple
-Cabal-version:       >=1.2
+Cabal-version:       >=1.6
+source-repository head
+  type:     git
+  location: git://github.com/dagit/snippet-extractor.git
 
 Executable snippet-extractor
   -- .hs or .lhs file containing the Main module.
