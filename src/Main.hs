@@ -34,7 +34,7 @@ main = do
             "A snippet has the following form:\n"++
             "  /* @snippet-start snippet1.c */\n"++
             "  for(i = 0; i < 100; i++){\n"++
-            "    printf(\"%d\\n\");\n"++
+            "    printf(\"%d\\n\",i);\n"++
             "  }\n"++
             "  /* @snippet-end */\n"++
             "\n" ++
