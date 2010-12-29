@@ -38,7 +38,7 @@ main = do
             "  }\n"++
             "  /* @snippet-end */\n"++
             "\n" ++
-            "The above snippet would be extracted and place in snippet1.c\n"++
+            "The above snippet would be extracted and placed in snippet1.c\n"++
             "\n" ++
             "Note: If the filename you want the snippet place in has spaces,\n"++
             "      then put the name in quotes like this:\n"++
