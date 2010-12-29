@@ -4,6 +4,7 @@ import System.Environment ( getArgs )
 import System.IO ( withFile, hPutStr, IOMode(..) )
 import Data.List ( isInfixOf )
 import Data.Char ( isSpace )
+import Data.Maybe ( catMaybes )
 import Text.Parsec.String
 import Text.Parsec.Char
 import Text.Parsec.Prim
@@ -12,18 +13,17 @@ import Text.Parsec.Combinator
 main :: IO ()
 main = do
   args <- getArgs
-  if ("--help" `elem` args)
+  if "--help" `elem` args
     then printUsage
     else mapM_ processFile args
-  return ()
  where
  processFile file = do
    contents <- readFile file
-   case runParser parseSnippet () file contents of
+   case runParser parseSnippets () file contents of
      Left  err -> print err
-     Right (name, ls) -> do
+     Right snippets -> mapM_ (\(name,ls) -> do
        withFile name WriteMode $ \h -> do
-       hPutStr h ls
+       hPutStr h ls) snippets
  printUsage = do
    putStr $ "Usage: snippet-extractor [FILE1 FILE2 ...]\n" ++
             "\n" ++
@@ -72,6 +72,9 @@ parseSnippet = do
     if snippetEnd `isInfixOf` nextLine
       then return $! reverse acc
       else go (nextLine : acc)
+
+parseSnippets :: Parser [(FilePath, String)]
+parseSnippets = many (try parseSnippet)
 
 ---- Tests
 -- TODO: automate these
